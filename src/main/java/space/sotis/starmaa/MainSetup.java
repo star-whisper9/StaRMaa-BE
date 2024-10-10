@@ -2,6 +2,7 @@ package space.sotis.starmaa;
 
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
+import space.sotis.starmaa.util.RedisUtil;
 
 /**
  * @author x1ngyu
@@ -16,6 +17,7 @@ public class MainSetup implements Setup {
 
     @Override
     public void destroy(NutConfig nutConfig) {
-
+        // 关闭Redis连接池
+        RedisUtil.close();
     }
 }
