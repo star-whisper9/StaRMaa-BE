@@ -7,7 +7,7 @@ import space.sotis.starmaa.util.WeekdayAlgorithm;
 
 public class TestWeekdayAlgorithm {
     public static void main(String[] args) {
-        int days = WeekdayAlgorithm.combineDays(1, 1);
+        byte days = WeekdayAlgorithm.combineDays(WeekdayAlgorithm.SUNDAY, WeekdayAlgorithm.MONDAY, WeekdayAlgorithm.TUESDAY);
         System.out.println(WeekdayAlgorithm.isDayIncluded(days, WeekdayAlgorithm.MONDAY));
         System.out.println(WeekdayAlgorithm.isDayIncluded(days, WeekdayAlgorithm.TUESDAY));
         System.out.println(WeekdayAlgorithm.isDayIncluded(days, WeekdayAlgorithm.WEDNESDAY));
