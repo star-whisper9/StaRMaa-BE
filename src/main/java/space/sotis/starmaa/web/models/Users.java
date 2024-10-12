@@ -14,10 +14,7 @@ import java.sql.Timestamp;
 @Data
 @Table("users")
 public class Users {
-    @Id
-    private int id;
-
-    @Name
+    @Id(auto = false)
     @Column("user_id")
     @ColDefine(type = ColType.INT)
     private int userId;
@@ -52,6 +49,7 @@ public class Users {
 
     @Column
     @ColDefine(type = ColType.VARCHAR, width = 32)
+    @Default("guest")
     private String role;
 
     @Column("remain_days")

@@ -1,5 +1,6 @@
 package space.sotis.starmaa;
 
+import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
@@ -14,5 +15,6 @@ import org.nutz.mvc.annotation.SetupBy;
         "*anno", "space.sotis.starmaa"
 })
 @SetupBy(MainSetup.class)
+@ChainBy(args = "chain.jsonc")
 public class MainModule {
 }
