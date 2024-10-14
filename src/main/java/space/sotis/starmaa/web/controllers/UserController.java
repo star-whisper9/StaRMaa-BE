@@ -3,8 +3,6 @@ package space.sotis.starmaa.web.controllers;
 import cn.dev33.satoken.util.SaResult;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.json.Json;
-import org.nutz.json.JsonFormat;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.annotation.*;
 import space.sotis.starmaa.web.models.ServiceResponse;
@@ -22,19 +20,6 @@ public class UserController {
     @Inject
     private UserService userService;
 
-    //region 内部方法
-
-    /**
-     * 封装toJson，用于返回不包含换行的<code>ServiceResponse</code>对象的 Json字符串
-     *
-     * @param response ServiceResponse对象
-     * @return Json字符串
-     */
-    private String toJson(ServiceResponse<?> response) {
-        return Json.toJson(response, JsonFormat.tidy());
-    }
-    //endregion
-
     /**
      * 注册端点
      *
@@ -47,9 +32,9 @@ public class UserController {
     @AdaptBy(type = JsonAdaptor.class)
     @Ok("json")
     @Chain("anonymous")
-    public String register(@Param("..") String registerJson) throws Exception {
+    public ServiceResponse<?> register(@Param("..") String registerJson) throws Exception {
         ServiceResponse<String> response = userService.register(registerJson);
-        return response != null ? toJson(response) : toJson(new ServiceResponse<>());
+        return response != null ? response : new ServiceResponse<>();
     }
 
     @At("/getUserInfo")
@@ -69,13 +54,12 @@ public class UserController {
     }
 
     /**
-     * 登录端点
+     * 登录端点。
      *
      * @param loginJson Json字符串
      * @return {@link SaResult}对象
      * @see space.sotis.starmaa.web.services.UserService#login(String)
      */
-    // fixme
     @At("/login")
     @POST
     @AdaptBy(type = JsonAdaptor.class)
@@ -83,12 +67,14 @@ public class UserController {
     @Chain("anonymous")
     public SaResult login(@Param("..") String loginJson) throws Exception {
         ServiceResponse<SaResult> response = userService.login(loginJson);
+        /*
+        内部抛错的时候response为null，这里判空处理，抛错了返回Http 500。
+         */
         if (response != null) {
             return response.getPayload();
         } else {
             return new SaResult(500, "Internal Server Error", "Internal Server Error");
         }
-
     }
 
     @At("/logout")

@@ -1,5 +1,6 @@
 package space.sotis.starmaa.web.models;
 
+import cn.dev33.satoken.util.SaResult;
 import lombok.Data;
 
 /**
@@ -50,5 +51,16 @@ public class ServiceResponse<T> {
      */
     public static <T> ServiceResponse<T> failure(String errorMessage) {
         return new ServiceResponse<>(false, null, errorMessage);
+    }
+
+    /**
+     * 包含SaResult时失败的响应重载
+     *
+     * @param errorMessage 错误信息
+     * @param saResult     Sa响应结果 错误信息
+     * @return ServiceResponse
+     */
+    public static ServiceResponse<SaResult> failure(String errorMessage, SaResult saResult) {
+        return new ServiceResponse<>(false, saResult, errorMessage);
     }
 }

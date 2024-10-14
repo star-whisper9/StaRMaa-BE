@@ -37,9 +37,9 @@ public class UserService {
      * @return 解密后的密码
      * @throws Exception 异常
      */
-    public String decryptPassword(String encryptedPassword) throws Exception {
+    private String decryptPassword(String encryptedPassword) throws Exception {
         PrivateKey privateKey = RSAKeyPairGenerator.getPrivateKey();
-        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decodedBytes = Base64.getDecoder().decode(encryptedPassword);
         byte[] decryptedBytes = cipher.doFinal(decodedBytes);
@@ -93,14 +93,14 @@ public class UserService {
         Users user = dao.fetch(Users.class, userId);
 
         if (user == null) {
-            return ServiceResponse.failure("用户不存在。");
+            return ServiceResponse.failure("用户不存在。", new SaResult(403, "用户不存在。", "用户不存在。"));
         }
 
         if (checkPassword(decryptedPassword, user.getPassword())) {
             StpUtil.login(userId);
             return ServiceResponse.success(SaResult.ok("登录成功。"));
         } else {
-            return ServiceResponse.failure("密码错误。");
+            return ServiceResponse.failure("密码错误。", new SaResult(403, "密码错误。", "密码错误。"));
         }
     }
 }
