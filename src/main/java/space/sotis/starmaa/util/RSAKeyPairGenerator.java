@@ -13,6 +13,7 @@ import java.util.Base64;
  * RSA密钥对生成器。
  */
 public class RSAKeyPairGenerator {
+    @Getter
     private static final PublicKey publicKey;
     @Getter
     private static final PrivateKey privateKey;
@@ -31,11 +32,11 @@ public class RSAKeyPairGenerator {
     }
 
     /**
-     * 重写的公钥获取方法，返回的是Base64编码后的公钥字符串。
+     * 公钥获取方法，返回的是Base64编码后的公钥字符串。
      *
      * @return String 公钥字符串
      */
-    public static String getPublicKey() {
+    public static String getPublicKeyString() {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 }

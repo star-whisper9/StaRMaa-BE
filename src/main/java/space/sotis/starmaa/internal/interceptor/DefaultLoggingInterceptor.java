@@ -11,7 +11,7 @@ import space.sotis.starmaa.util.LoggerUtil;
  * @since 2024/10/12
  */
 @IocBean
-public class DefaultLogging implements MethodInterceptor {
+public class DefaultLoggingInterceptor implements MethodInterceptor {
     private static final Logger logger = LoggerUtil.getLogger();
 
     @Override

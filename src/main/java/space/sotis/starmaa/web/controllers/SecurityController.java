@@ -30,7 +30,7 @@ public class SecurityController {
     @Chain("anonymous")
     public Map<String, String> getPublicKey() {
         Map<String, String> map = new HashMap<>();
-        map.put("publicKey", RSAKeyPairGenerator.getPublicKey());
+        map.put("publicKey", RSAKeyPairGenerator.getPublicKeyString());
         return map;
     }
 }
