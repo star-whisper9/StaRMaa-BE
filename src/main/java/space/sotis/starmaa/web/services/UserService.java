@@ -28,9 +28,6 @@ public class UserService {
     @Inject
     private Dao dao;
 
-    @Inject
-    private RSAKeyPairGenerator rsaKeyPairGenerator;
-
     //region 内部方法
 
     /**
@@ -40,9 +37,9 @@ public class UserService {
      * @return 解密后的密码
      * @throws Exception 异常
      */
-    private String decryptPassword(String encryptedPassword) throws Exception {
-        PrivateKey privateKey = rsaKeyPairGenerator.getPrivateKey();
-        Cipher cipher = Cipher.getInstance("RSA");
+    public String decryptPassword(String encryptedPassword) throws Exception {
+        PrivateKey privateKey = RSAKeyPairGenerator.getPrivateKey();
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decodedBytes = Base64.getDecoder().decode(encryptedPassword);
         byte[] decryptedBytes = cipher.doFinal(decodedBytes);
@@ -66,14 +63,14 @@ public class UserService {
      * @param registerJson Json字符串
      * @return ServiceResponse<String><br>
      */
-    public ServiceResponse<String> register(String registerJson) {
+    public ServiceResponse<String> register(String registerJson) throws Exception {
         Users user = Json.fromJson(Users.class, registerJson);
 
         if (dao.fetch(Users.class, user.getUserId()) != null) {
             return ServiceResponse.failure("用户已存在。");
         }
 
-        user.setPassword(genPassword(user.getPassword()));
+        user.setPassword(genPassword(decryptPassword(user.getPassword())));
         if (dao.insert(user) == null) {
             throw new DaoException("插入失败。");
         } else {

@@ -47,7 +47,7 @@ public class UserController {
     @AdaptBy(type = JsonAdaptor.class)
     @Ok("json")
     @Chain("anonymous")
-    public String register(@Param("..") String registerJson) {
+    public String register(@Param("..") String registerJson) throws Exception {
         ServiceResponse<String> response = userService.register(registerJson);
         return response != null ? toJson(response) : toJson(new ServiceResponse<>());
     }

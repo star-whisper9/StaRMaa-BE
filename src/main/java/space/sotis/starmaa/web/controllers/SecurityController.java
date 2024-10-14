@@ -1,6 +1,5 @@
 package space.sotis.starmaa.web.controllers;
 
-import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Chain;
@@ -20,9 +19,6 @@ import java.util.Map;
 @IocBean
 @At("/api/security")
 public class SecurityController {
-    @Inject
-    private RSAKeyPairGenerator rsaKeyPairGenerator;
-
     /**
      * 获取公钥端点
      *
@@ -34,7 +30,7 @@ public class SecurityController {
     @Chain("anonymous")
     public Map<String, String> getPublicKey() {
         Map<String, String> map = new HashMap<>();
-        map.put("publicKey", rsaKeyPairGenerator.getPublicKey());
+        map.put("publicKey", RSAKeyPairGenerator.getPublicKey());
         return map;
     }
 }
