@@ -8,22 +8,20 @@ import space.sotis.starmaa.util.LoggerUtil;
 
 /**
  * @author x1ngyu
+ * @see space.sotis.starmaa.internal.interceptor.ControllerLoggingInterceptor
  * @since 2024/10/12
+ * <p>
+ * 服务层日志拦截器，在此层忽略抛出的异常，直接抛出到上层处理。
  */
 @IocBean
-public class DefaultLoggingInterceptor implements MethodInterceptor {
+public class ServiceLoggingInterceptor implements MethodInterceptor {
     private static final Logger logger = LoggerUtil.getLogger();
 
     @Override
-    public void filter(InterceptorChain interceptorChain) {
+    public void filter(InterceptorChain interceptorChain) throws Throwable {
         logger.info("调用方法: {}", interceptorChain.getCallingMethod().getName());
         try {
             interceptorChain.doChain();
-        } catch (Throwable e) {
-            logger.error("调用方法: {} 出现异常: {}", interceptorChain.getCallingMethod().getName(), e.getMessage());
-            if (logger.isDebugEnabled()) {
-                logger.debug("完整异常: ", e);
-            }
         } finally {
             logger.info("调用方法: {} 结束", interceptorChain.getCallingMethod().getName());
         }

@@ -15,7 +15,8 @@ var ioc = {
         type: "org.nutz.ioc.aop.config.impl.JsonAopConfigration",
         fields: {
             itemList: [
-                ['space.sotis.starmaa.web.*.*', '.+', 'space.sotis.starmaa.internal.interceptor.DefaultLoggingInterceptor']
+                ['space.sotis.starmaa.web.services.*', '.+', 'space.sotis.starmaa.internal.interceptor.ServiceLoggingInterceptor'],
+                ['space.sotis.starmaa.web.controllers.*', '.+', 'space.sotis.starmaa.internal.interceptor.ControllerLoggingInterceptor']
             ]
         }
     }

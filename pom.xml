@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.nutz</groupId>
             <artifactId>nutz</artifactId>
-            <version>1.r.73-SNAPSHOT</version>
+            <version>1.r.69.v20220703</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

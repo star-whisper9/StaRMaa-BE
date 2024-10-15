@@ -16,10 +16,11 @@ graph LR
 
 #### 1. 后端具体技术栈
 
+- [ ] 后端API风格：Restful
 - [x] Core: Nutz
-- [ ] Logging: Log4j2 + Slf4j
-- [ ] Authentication: Sa Token
-- [ ] Database: PostgreSQL
+- [x] Logging: Log4j2 + Slf4j
+- [x] Authentication: Sa Token
+- [x] Database: PostgreSQL
 - [ ] Cache: Redis
 - [ ] Session: Redis
 - [ ] File Storage: Minio
