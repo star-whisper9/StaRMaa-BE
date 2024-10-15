@@ -1,5 +1,6 @@
 package space.sotis.starmaa.web.services;
 
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import org.mindrot.jbcrypt.BCrypt;
@@ -79,7 +80,7 @@ public class UserService {
     }
 
     /**
-     * 登录<br>
+     * 登录<br>登录完成后会将用户信息存入Session。<br>
      * Json示例：<br>
      * {"userId":"", "password":""}<br>
      *
@@ -98,9 +99,108 @@ public class UserService {
 
         if (checkPassword(decryptedPassword, user.getPassword())) {
             StpUtil.login(userId);
+            SaSession session = StpUtil.getSession();
+            user.setPassword(null);
+            session.set("user", user);
+            Object n = session.get("user");
             return ServiceResponse.success(SaResult.ok("登录成功。"));
         } else {
             return ServiceResponse.failure("密码错误。", new SaResult(403, "密码错误。", "密码错误。"));
+        }
+    }
+
+    /**
+     * 单次修改单列用户信息
+     *
+     * @param userInfoJson Json字符串
+     * @return ServiceResponse<String>
+     */
+    public ServiceResponse<String> setUserInfo(String userInfoJson) {
+        /*
+        允许修改的列
+         */
+        enum Column {
+            phone,
+            username,
+            deviceId,
+            birthday
+        }
+
+        Users user = (Users) StpUtil.getSession().get("user");
+        Map<Object, Object> userInfoMap = Json.fromJson(Map.class, userInfoJson);
+        if (userInfoMap.size() != 1) {
+            throw new IllegalArgumentException("参数数量错误。");
+        }
+
+        String key = (String) userInfoMap.keySet().toArray()[0];
+        try {
+            Column.valueOf(key);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("不允许修改的字段: " + key);
+        }
+
+        String value = (String) userInfoMap.get(key);
+        switch (key) {
+            case "phone":
+                user.setPhone(value);
+                break;
+            case "username":
+                user.setUsername(value);
+                break;
+            case "deviceId":
+                user.setDeviceId(value);
+                break;
+            case "birthday":
+                user.setBirthday(value);
+                break;
+        }
+
+        if (dao.update(user, String.format("^%s$", key)) == 1) {
+            return ServiceResponse.success("修改成功。");
+        } else {
+            return ServiceResponse.failure("修改失败。");
+        }
+    }
+
+    /**
+     * 退出登录
+     */
+    public void logout() {
+        StpUtil.logout();
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param passwordJson 包含新旧密码的Json
+     * @return ServiceResponse<String>
+     */
+    public ServiceResponse<String> changePassword(String passwordJson) throws Exception {
+        Map<String, String> passwordMap = Json.fromJson(Map.class, passwordJson);
+        SaSession session = StpUtil.getSession();
+        Users user = (Users) session.get("user");
+        int userId = user.getUserId();
+        String oldPassword = decryptPassword(passwordMap.get("oldPassword"));
+        String newPassword = decryptPassword(passwordMap.get("newPassword"));
+
+        Users dbUser = dao.fetch(Users.class, userId);
+        if (dbUser == null) {
+            return ServiceResponse.failure("用户不存在。");
+        }
+
+        if (checkPassword(oldPassword, dbUser.getPassword())) {
+            if (oldPassword.equals(newPassword)) {
+                return ServiceResponse.failure("新旧密码相同。");
+            }
+
+            user.setPassword(genPassword(newPassword));
+            if (dao.update(user, "^password$") == 1) {
+                return ServiceResponse.success("修改成功。");
+            } else {
+                return ServiceResponse.failure("修改失败。");
+            }
+        } else {
+            return ServiceResponse.failure("密码错误。");
         }
     }
 }

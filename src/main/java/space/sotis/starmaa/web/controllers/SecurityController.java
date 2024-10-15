@@ -1,10 +1,7 @@
 package space.sotis.starmaa.web.controllers;
 
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Chain;
-import org.nutz.mvc.annotation.GET;
-import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.*;
 import space.sotis.starmaa.util.RSAKeyPairGenerator;
 
 import java.util.HashMap;
@@ -18,13 +15,14 @@ import java.util.Map;
  */
 @IocBean
 @At("/api/security")
+@Fail("http:500")
 public class SecurityController {
     /**
      * 获取公钥端点
      *
      * @return 公钥。字段名：<code>publicKey</code>
      */
-    @At("/getPublicKey")
+    @At("/public-key")
     @GET
     @Ok("json")
     @Chain("anonymous")
